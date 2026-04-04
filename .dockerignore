@@ -2,6 +2,7 @@ backup_script.sh
 Dockerfile
 .env
 .git
+.gitignore
 haproxy
 LICENSE
 nginx
