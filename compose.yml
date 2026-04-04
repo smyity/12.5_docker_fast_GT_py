@@ -1,0 +1,33 @@
+include:
+  - proxy.yaml
+
+services:
+  web:
+    build: .
+    image: fastapi:v2
+    restart: on-failure:5
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=172.20.0.10
+      # значения из .env
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_NAME=${MYSQL_DATABASE}
+    networks:
+      backend:
+        ipv4_address: 172.20.0.5
+    depends_on:
+      reverse-proxy:
+        condition: service_started
+
+  db:
+    image: mysql:8
+    restart: on-failure:5
+    env_file:
+      - .env
+    networks:
+      backend:
+        ipv4_address: 172.20.0.10
+    depends_on:
+      - web
